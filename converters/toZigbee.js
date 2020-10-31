@@ -3144,6 +3144,15 @@ const converters = {
             }
         },
     },
+    tuya_thermostat_week: {
+        key: ['week'],
+        convertSet: async (entity, key, value, meta) => {
+            const lookup = {'5+2': 0, '6+1': 1, '7': 2};
+            const week = lookup[value];
+            sendTuyaCommand(entity, 1135, 0, [1, week]);
+            return {state: {week: value}};
+        },
+    },
     tuya_cover_control: {
         key: ['state', 'position'],
         convertSet: async (entity, key, value, meta) => {
