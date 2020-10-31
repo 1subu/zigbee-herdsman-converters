@@ -3116,7 +3116,7 @@ const converters = {
     tuya_thermostat_window_detect: {    // payload example { "valve":"OFF", "temperature":5, "minutes":8}
         key: ['window_detect'],
         convertSet: async (entity, key, value, meta) => {
-            const valve = value.valve.toUpperCase === 'ON' ? 1 : 0;
+            const valve = value.valve === 'ON' ? 1 : 0;
             const degree = value.temperature; 
             const minutes = value.minutes;
             sendTuyaCommand(entity, 104, 0, [3, valve, value.temperature, value.minutes]);
