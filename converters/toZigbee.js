@@ -3116,16 +3116,15 @@ const converters = {
     tuya_thermostat_window_detect: {    // payload example { "valve":"OFF", "temperature":5, "minutes":8}
         key: ['window_detect'],
         convertSet: async (entity, key, value, meta) => {
-            const valve = value.valve === 'ON' ? 1 : 0;
-            const degree = value.temperature; 
-            const minutes = value.minutes;
+            const valve = value.valve.toUpperCase() === 'ON' ? 1 : 0;
             sendTuyaCommand(entity, 104, 0, [3, valve, value.temperature, value.minutes]);
+            console.log(`window_detect: Valve: ${valve} Temp: ${value.temperature} Min ${value.minutes}`);
         },
     },
     tuya_thermostat_schedule: {    // payload example {"holidays":[{"hour":6,"minute":0,"temperature":20},{"hour":8,"minute":0,....  6x hour,minute,temperature
         key: ['schedule'],
         convertSet: async (entity, key, value, meta) => {
-            const prob = Object.keys(value)[0];	
+            const prob = Object.keys(value)[0];	//"workdays" or "holidays"
             if ((prob === "workdays") || (prob === "holidays")) {
                 const dpId = (prob === "workdays") ? 112 : 113;
                 const payload = [];
@@ -3141,6 +3140,7 @@ const converters = {
                     }
                 }
             sendTuyaCommand(entity, dpId, 0, [18, ...payload]);
+            console.log(`schedule: dpid: ${dpId} payload ${payload}`);
             }
         },
     },
@@ -3150,6 +3150,7 @@ const converters = {
             const lookup = {'5+2': 0, '6+1': 1, '7': 2};
             const week = lookup[value];
             sendTuyaCommand(entity, 1135, 0, [1, week]);
+            console.log(`thermostat_week: ${value} ->: ${week}`);
             return {state: {week: value}};
         },
     },
