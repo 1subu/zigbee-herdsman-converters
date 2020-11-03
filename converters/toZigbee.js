@@ -3113,6 +3113,21 @@ const converters = {
             }
         },
     },
+    tuya_thermostat_away_preset: {
+        key: ['away_preset_temperature', 'away_preset_days'],
+        convertSet: async (entity, key, value, meta) => {
+            switch (key) {
+            case 'away_preset_days':
+                sendTuyaCommand(entity, 629, 0, [4, 0, 0, ...utils.convertDecimalValueTo2ByteHexArray(value)]);
+                console.log(`TRV away days ${value} sent to device.`);
+                break;
+            case 'away_preset_temperature':
+                sendTuyaCommand(entity, 626, 0, [4, 0, 0, ...utils.convertDecimalValueTo2ByteHexArray(value)]);
+                console.log(`TRV away temperature ${value} sent to device.`);
+                break;
+            }
+        },
+    },
     tuya_thermostat_window_detect: {    // payload example { "valve":"OFF", "temperature":5, "minutes":8}
         key: ['window_detect'],
         convertSet: async (entity, key, value, meta) => {
