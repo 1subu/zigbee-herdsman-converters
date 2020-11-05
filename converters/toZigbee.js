@@ -3128,12 +3128,12 @@ const converters = {
             }
         },
     },
-    tuya_thermostat_window_detect: {    // payload example { "valve":"OFF", "temperature":5, "minutes":8}
+    tuya_thermostat_window_detect: {    // payload example { "detect":"OFF", "temperature":5, "minutes":8} 
         key: ['window_detect'],
         convertSet: async (entity, key, value, meta) => {
-            const valve = value.valve.toUpperCase() === 'ON' ? 1 : 0;
-            sendTuyaCommand(entity, 104, 0, [3, valve, value.temperature, value.minutes]);
-            console.log(`window_detect: Valve: ${valve} Temp: ${value.temperature} Min ${value.minutes}`);
+            const detect = value.detect.toUpperCase() === 'ON' ? 1 : 0;
+            sendTuyaCommand(entity, 104, 0, [3, detect, value.temperature, value.minutes]);
+            console.log(`window_detect: ${detect} Temp: ${value.temperature} Min ${value.minutes}`);
         },
     },
     tuya_thermostat_schedule: {    // payload example {"holidays":[{"hour":6,"minute":0,"temperature":20},{"hour":8,"minute":0,....  6x hour,minute,temperature
