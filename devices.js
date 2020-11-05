@@ -456,6 +456,22 @@ const tuya = {
             await endpoint.command('manuSpecificTuyaDimmer', 'setTime', payload, {});
         }
     },
+    setLocalTime: async (type, data, device) => { // set UTC and Local Time as total number of seconds from 00: 00: 00 on January 01, 1970, GMT
+        if (data.type === 'commandSetTimeRequest' && data.cluster === 'manuSpecificTuyaDimmer') {
+            const utcTime = Math.round(((new Date()).getTime()) / 1000);
+            const localTime = utcTime - (new Date()).getTimezoneOffset() * 60;
+            const endpoint = device.getEndpoint(1);
+            const payload = {
+                payloadSize: 8,
+                payload: [
+                    ...utils.convertDecimalValueTo4ByteHexArray(utcTime),
+                    ...utils.convertDecimalValueTo4ByteHexArray(localTime),
+                ],
+            };
+            await endpoint.command('manuSpecificTuyaDimmer', 'setTime', payload, {});
+            console.log(`TRV set local Time:  ${payload.payload} `);
+        }
+    },
 };
 
 
@@ -1657,7 +1673,7 @@ const devices = [
         ],
         meta: {tuyaThermostatSystemMode: common.TuyaThermostatSystemModes, tuyaThermostatPreset: common.TuyaThermostatPresets},
         ota: ota.zigbeeOTA,
-        onEvent: tuya.setTime,
+        onEvent: tuya.setLocalTime,
         fromZigbee: [fz.tuya_thermostat, fz.tuya_thermostat_on_set_data, fz.ignore_basic_report],
         toZigbee: [
             tz.tuya_thermostat_child_lock, tz.tuya_thermostat_window_detection, tz.tuya_thermostat_valve_detection,
